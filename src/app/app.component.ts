@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { FacebookService, LoginResponse, LoginOptions, UIResponse, UIParams, FBVideoComponent } from 'ngx-facebook';
+import { FacebookService, LoginResponse, LoginOptions, UIResponse, UIParams, FBVideoComponent, AuthResponse } from 'ngx-facebook';
 
 @Component({
   selector: 'app-root',
@@ -21,7 +21,7 @@ export class AppComponent {
     console.log('Initializing Facebook');
 
     fb.init({
-      appId: '1927971220769787',
+      appId: '783324272014754',// faithmatch 783324272014754 ldollars 491260624369943 works  shareopps 440670959472188 not works
       version: 'v2.9'
     });
 
@@ -46,7 +46,7 @@ export class AppComponent {
     const loginOptions: LoginOptions = {
       enable_profile_selector: true,
       return_scopes: true,
-      scope: 'public_profile,user_friends,email,pages_show_list'
+      scope: 'public_profile,user_friends,email,pages_show_list,user_photos'
     };
 
     this.fb.login(loginOptions)
@@ -75,7 +75,37 @@ export class AppComponent {
       .catch(this.handleError);
   }
 
+  getPics() {
+    this.fb.login()
+      .then((res: LoginResponse) => {
+        console.log('Logged in', res);
+      }).then(() => {
+        this.fb.api('/me?fields=albums.limit(5){name,count,cover_photo{picture}}').then((response: any) => {
+          console.log(response)
+        }).catch(this.handleError)
+      })
+      .catch(this.handleError);
+    /* 
+        this.fb.api('/me?fields=albums.limit(5){name,count,cover_photo{picture}}')
+          .then((res: any) => {
+            console.log('Got the users pic', res);
+          })
+          .catch(this.handleError); */
+  }
 
+    getPics2() {
+  
+        this.fb.api('/me?fields=albums.limit(5){name,count,cover_photo{picture}}').then((response: any) => {
+          console.log(response);
+        }).catch(this.handleError)
+      
+    /* 
+        this.fb.api('/me?fields=albums.limit(5){name,count,cover_photo{picture}}')
+          .then((res: any) => {
+            console.log('Got the users pic', res);
+          })
+          .catch(this.handleError); */
+  }
   /**
    * Get the users friends
    */
